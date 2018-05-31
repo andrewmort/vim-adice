@@ -1,0 +1,213 @@
+ale[rt]
+ale[rt] add
+ale[rt] del  [{command-alert-name}|all]
+ale[rt] report
+ale[rt] on   [mod|com]
+ale[rt] off  [mod|com]
+ale[rt] suppress
+ale[rt] reset
+
+alt[er] ... [in]
+
+be[ep]
+
+bre[ak]
+
+bro[wse]
+
+ca[tch]
+ca[tch] {command-name ...}
+
+cle[ar]
+
+clo[se] #3
+clo[se] plm
+clo[se] all
+
+com[mand] str
+
+con[tinue]
+con[tinue] [to] ... [{by|dec|oct} ...]
+con[tinue] [at] ...
+
+def[ine] funcname ([p [,p...]] [, the_rest]) = expr [in unitname]
+
+del[ete] scan scan_expression [, scan_expression ...]
+del[ete] scan last
+del[ete] scans
+
+dem[and]
+
+dim[ension] ... [in]
+
+display alias ...
+display aspects ...
+display [long] elements [list_of_circuit_components]
+display epath
+display executes
+display fop {node|element|scalar} names
+display flat nodes [ name1 [ name2 ... ] ]
+display frequency
+display include
+display isolating
+display library
+display keeps
+display model .
+display nemo
+display nic {node|element|scalar} names
+display nodes
+display noise
+display nonics
+display nst
+display nst {node|element|scalar} names
+display parts [subsystem_names_or_numbers]
+display pcaps
+display pss
+display pz
+display sensitivity
+display simulate
+display [long] stats [subsystem_names_or_numbers]
+display sweep
+display label
+
+display aspects [ [<primitive_model_name>|all|off|none]
+    [[+|-] <list_of_aspect_names>|all] ]
+
+do [local] var = init to last [by increment]
+do [local] var = init to last dec num_per_decade
+do [local] var = init to last oct num_per_octave
+
+
+em step 1
+
+execute list_of_patterns as mod[.type]
+execute trace list_of_patterns
+
+fop off
+fop filename
+fop (filename_expression)
+fop
+fop to_zero
+
+freq freqval
+freq off
+
+radar hardcopy
+
+hhistogram xarray, yarray
+hhistogram xarray from -0.5 to 0.5 by 0.05
+histogram y-group [; y-group ...]
+    [from from-value] [to to-value] [by binwidth]
+if cond [then] command
+
+if cond then 
+   command 
+   ... 
+elseif cond then 
+   command 
+   ... 
+else 
+   command 
+   ... 
+endif 
+
+include none
+include off
+
+keep voltages currents parameters noise sensitivities misc all none off 
+keep push pop
+
+label off none
+
+library none
+library off
+
+mor off
+nemo off under
+
+if (a(j) == 0) then next
+
+nic off under to_zero
+
+noise off
+
+nsave under binary ascii
+nst off to_zero under
+
+open a w r buffered unbuffered THE_SCREEN
+
+opt off variable scale linear logarithmic performance objective constraint options minimum typical maximum from to by target populations generations functions resultsdir rsoptions runmode printfront seed reltol retrylimit startoptiv
+
+parameterize off toschem all function 
+
+path off del
+
+pcap off report cutoff scale node all level under on
+
+plm file binary ascii vs for from to by
+
+plot vs for from to by dec oct xmin xmax xinc window titile ptype orientation file printer image_height image_width image_margin overlay ymin ymax weight lin log mark line color label radix label overlay poly_annot rect_annot circ_annot text_annot color 
+
+hplot file ptype orientation printer image_height image_width image_margin name_and_date 
+
+print nonewline
+
+printf
+
+probe aspects
+probe long ac device element 
+probe unkown node
+probe long by_name flat noise
+probe pz
+probe long by_name sensitivity
+
+profile on report off status
+
+pss off from by
+pz off
+quit noquery
+radar ...
+
+read for to by entire_line entire_file
+
+replicate window sel all 
+reset vars offs all 
+rot quiet notopo
+save binary ascii last
+saveas off temp
+scandir -detail
+sensitivity off
+show show arrays, functions, scalars
+show sys_arrays, sys_functions, sys_scalars
+show tech_arrays, tech_functions, tech_scalars
+show user_arrays, user_functions, user_scalars
+show cpu
+show etime
+show filenames
+show memory or swap
+show macros [pattern]
+show open
+show path
+show state
+show time
+show version
+
+sparameter [sparameters] [yparameters] [zparameters] [noise]
+sparameter off
+
+sweep var from start to stop [{by|oct|dec} incr]
+    [sidebands max_sideband|sideband_array]
+sweep var at array
+sweep off
+
+trav node element
+
+use [-check] [if_exists]
+
+WINDOW [GEOM geom-expr] [OPEN | CLOSE | INFO] [window_spec]
+window-spec : blank | numeric_expression | ALL | NEW | DEFAULT
+geom-expr : string-expression or literal-x-geometry-spec
+literal-x-geometry-spec : WIDTHxHEIGHT+X+Y
+
+
+

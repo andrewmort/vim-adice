@@ -36,7 +36,7 @@ syntax region adiceString start=+L\="+ skip=+\\\\\|\\"+ end=+"+ contains=@Spell
 setlocal iskeyword+=$,.
 
 syntax keyword adiceCommand contained $
-syntax keyword adiceCommand contained ale[rt]
+"syntax keyword adiceCommand contained ale[rt]
 syntax keyword adiceCommand contained alt[er]
 syntax keyword adiceCommand contained be[ep]
 syntax keyword adiceCommand contained cle[ar]
@@ -130,7 +130,6 @@ syntax keyword adiceCommand contained else
 syntax keyword adiceCommand contained elsei[f]
 syntax keyword adiceCommand contained endi[f]
 syntax keyword adiceCommand contained if
-syntax keyword adiceCommand contained then
 
 syntax keyword adiceCommand contained br[eak]
 syntax keyword adiceCommand contained do
@@ -148,7 +147,8 @@ syntax keyword adiceCommand contained ma[cro]
 syntax keyword adiceSubCmdAlert contained add del all on off mod com reset
 syntax keyword adiceSubCmdAlert contained element suppress report
 
-"syntax region adiceCmdAlert start="ale[rt]" skip="&\s*" end="$" contains=adiceCommand
+
+syntax region adiceCmdAlert transparent start="ale[rt]" skip="&\s*" end="$" contains=adiceFunction,adiceOperator,adiceComment,adiceString,
 
 
 " ***************** Functions *****************************
@@ -551,7 +551,9 @@ if version >= 508 || !exists("did_adice_syn_inits")
    HiLink adiceCommand        Keyword
    HiLink adiceTodo           Todo
 
-   HiLink adiceSubCmdAlert       Keyword
+   "HiLink adiceSubCmdAlert       Keyword
+   "HiLink adiceCmdAlert       Keyword
+   HiLink adiceSpecial       Keyword
 
    delcommand HiLink
 endif

@@ -1,0 +1,43 @@
+alert
+alert add
+alert del
+alert del all
+alert report
+alert on
+alert on mod
+alert off com
+alert suppress
+alert reset
+alert #1 &
+  /* test */ add new_alert
+alert &
+  /* test */ #1 report
+
+alter
+alter var = 0 in V, &
+  /* another var */ var2 = 1 in A
+
+beep
+
+break
+
+browse
+
+catch
+catch set a = 3
+
+clear
+
+close #3
+close plm
+close all
+
+command
+
+continue
+continue to 7.5 by 0.25
+continue to 7.5 dec 10
+continue to 7.5 oct 8
+continue at array
+
+define a(asdf,asdf, the_rest) = b in V
