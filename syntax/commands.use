@@ -32,7 +32,8 @@ close #3
 close plm
 close all
 
-command
+command &
+ /* asdf */ #1 "adsfa"
 
 continue
 continue to 7.5 by 0.25
@@ -41,3 +42,42 @@ continue to 7.5 oct 8
 continue at array
 
 define a(asdf,asdf, the_rest) = b in V
+
+delete 
+delete scan asdf
+delete scan last
+delete scans
+
+demand
+
+dimension ... in
+
+display alias ...
+display aspects ...
+display long elements [list_of_circuit_components]
+display epath
+display executes
+display fop node|element|scalar} names
+display flat nodes [ name1 [ name2 ... ] ]
+display frequency
+display include
+display isolating
+display library
+display keeps
+display model .
+display nemo
+display nic node|element|scalar} names
+display nodes
+display noise
+display nonics
+display nst
+display nst node|element|scalar} names
+display parts [subsystem_names_or_numbers]
+display pcaps
+display pss
+display pz
+display sensitivity
+display simulate
+display long stats [subsystem_names_or_numbers]
+display sweep
+display label

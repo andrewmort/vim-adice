@@ -15,7 +15,7 @@ syntax case ignore
 
 " ***************** Operators *****************************
 syntax match   adiceOperator "[|~><!)(*%@+/=?:;}{,.\^\-\[\]]"
-syntax match   adiceOperator "&\s*\<"
+syntax match   adiceOperator "&\s*\S\@!"
 "TODO fix non-newline operator to work more consistently with var & -var
 
 
@@ -25,19 +25,16 @@ syntax keyword adiceTodo contained TODO FIXME XXX NOTE
 
 
 " ***************** Comments *****************************
-" Setup so that tpying first /* will create comment for entire remainder of
-" file until */ is typed on the same line or & is used to continue the line
-"syntax region adiceComment     start="\(/\*\)\@=" end="/\*\(.\|&\s*\n\)*\*/" contains=adiceTodo,adiceComment,@Spell
-syntax region adiceComment     start="/\*" end="\*/" end="$" contains=adiceTodo,adiceSpecialLine,adiceComment,@Spell
-syntax region adiceCommentLine start="\_^\s*\*" end="$" contains=adiceTodo,adiceSpecialLine,@Spell
+syntax region adiceComment     start="/\*" end="\*/" end="$" contains=adiceTodo,adiceContinueLine,adiceComment,@Spell
+syntax region adiceCommentLine start="\_^\s*\*" end="$" contains=adiceTodo,adiceContinueLine,@Spell
 
 
 " ***************** Strings *****************************
 syntax region adiceString start=+L\="+ skip=+\\\\\|\\"+ end=+"+ contains=@Spell
 
-syntax match  adiceSpecialLine contained "&\s*$"
-syntax region adiceSpecialFile contained start="\#" end="\<\w\+\>" end="$" contains=adiceOperator,adiceSpecialLine,adiceComment
-syntax cluster adiceSpecialGroup contains=adiceSpecialLine,adiceSpecialFile
+syntax match  adiceContinueLine contained "&\s*$"
+syntax region adiceSpecialFile contained start="\#" end="\<\w\+\>" end="$" contains=adiceOperator,adiceContinueLine,adiceComment
+syntax cluster adiceSpecialGroup contains=adiceContinueLine,adiceSpecialFile
 
 
 syntax keyword adiceFunction is_set is_signed is_string is_unsigned
@@ -52,13 +49,13 @@ syntax region adiceCmdBegin start="\_^\(/\*\|\s\|&\s*$\)*\<\(\w\+\|\W\)" end="\>
 syntax cluster adiceCmdGroup contains=adiceCommand
 
 " Cluster contains everything that is not in a command
-syntax cluster adiceNonCmdGroup contains=adiceFunction,adiceOperator,adiceComment,adiceSpecialLine,adiceString
+syntax cluster adiceNonCmdGroup contains=adiceFunction,adiceOperator,adiceComment,adiceContinueLine,adiceString
 
 " Cluster used between command and required subcommand
-syntax cluster adiceCmdFollowGroup contains=adiceSpecialFile,adiceSpecialLine,adiceOperator,adiceComment
+syntax cluster adiceCmdFollowGroup contains=adiceSpecialFile,adiceContinueLine,adiceOperator,adiceComment
 
 " Cluster used between subcommand and additional subcommand
-syntax cluster adiceCmdSubFollowGroup contains=adiceSpecialLine,adiceComment
+syntax cluster adiceCmdSubFollowGroup contains=adiceContinueLine,adiceComment
 
 
 "** Common SubCommands ***
@@ -66,22 +63,22 @@ syntax region adiceCmdSubAll   contained matchgroup=adiceCmdSub start="\<all\>" 
 syntax region adiceCmdSubAll   contained matchgroup=adiceCmdSub start="\<plm\>" end="\>"
 syntax region adiceCmdSubNES   contained matchgroup=adiceCmdSub start="\<\(node\|element\|scalar\)\>" end="\>"
 syntax region adiceCmdSubIn    contained matchgroup=adiceCmdSub start="\<in\>" end="\>"
+syntax region adiceCmdSubIncr  contained matchgroup=adiceCmdSub start="\<\(by\|dec\|oct\)\>" end="\>"
 
 "** Alert Command **
-syntax region adiceCmdAlert contained matchgroup=adiceCommand start="\<ale\%[rt]\>" end="$" end="\(\#\|)\|/\*\|&\s*$\|\s\)\@!" contains=@adiceCmdFollowGroup nextgroup=@adiceCmdAlertGroup
+syntax region adiceCmdAlert contained matchgroup=adiceCommand start="\<ale\%[rt]\>" end="$" end="\(\#\|)\|/\*\|&\s*$\|\s\)\@!" contains=@adiceCmdFollowGroup nextgroup=adiceCmdAlertSub
+syntax cluster adiceCmdGroup add=adiceCmdAlert
 
-syntax cluster adiceCmdAlertGroup contains=adiceCmdAlertSubAdd,adiceCmdAlertSubDel,adiceCmdAlertSubOnOff,adiceCmdAlertSubReset,adiceCmdAlertSubElement,adiceCmdAlertSubSuppress,adiceCmdAlertSubReport
+syntax region adiceCmdAlertSub contained matchgroup=adiceCmdSub start="\<add\>"       end="$" contains=@adiceNonCmdGroup
+syntax region adiceCmdAlertSub contained matchgroup=adiceCmdSub start="\<del\>"       end="$" contains=@adiceNonCmdGroup,adiceCmdSubAll
+syntax region adiceCmdAlertSub contained matchgroup=adiceCmdSub start="\<element\>"   end="$" contains=@adiceNonCmdGroup
+syntax region adiceCmdAlertSub contained matchgroup=adiceCmdSub start="\<on\>"        end="$" end="\(/\*\|&\s*$\|\s\)\@!" contains=@adiceCmdSubFollowGroup nextgroup=adiceCmdAlertSubOnOffSub
+syntax region adiceCmdAlertSub contained matchgroup=adiceCmdSub start="\<off\>"       end="$" end="\(/\*\|&\s*$\|\s\)\@!" contains=@adiceCmdSubFollowGroup nextgroup=adiceCmdAlertSubOnOffSub
+syntax region adiceCmdAlertSub contained matchgroup=adiceCmdSub start="\<report\>"    end="$" contains=@adiceNonCmdGroup
+syntax region adiceCmdAlertSub contained matchgroup=adiceCmdSub start="\<reset\>"     end="$" contains=@adiceNonCmdGroup
+syntax region adiceCmdAlertSub contained matchgroup=adiceCmdSub start="\<suppress\>"  end="$" contains=@adiceNonCmdGroup
 
-syntax region adiceCmdAlertSubAdd      contained matchgroup=adiceCmdSub start="\<add\>"       end="\>"
-syntax region adiceCmdAlertSubDel      contained matchgroup=adiceCmdSub start="\<del\>"       end="$" contains=adiceCmdSubAll,@adiceNonCmdGroup
-syntax region adiceCmdAlertSubElement  contained matchgroup=adiceCmdSub start="\<element\>"   end="\>"
-syntax region adiceCmdAlertSubOnOff    contained matchgroup=adiceCmdSub start="\<on\>"            end="$" end="\(/\*\|&\s*$\|\s\)\@!" contains=@adiceCmdSubFollowGroup nextgroup=adiceCmdAlertSubOnOffSub
-syntax region adiceCmdAlertSubOnOff    contained matchgroup=adiceCmdSub start="\<off\>"       end="$" end="\(/\*\|&\s*$\|\s\)\@!" contains=@adiceCmdSubFollowGroup nextgroup=adiceCmdAlertSubOnOffSub
-syntax region adiceCmdAlertSubReport   contained matchgroup=adiceCmdSub start="\<report\>"    end="\>"
-syntax region adiceCmdAlertSubReset    contained matchgroup=adiceCmdSub start="\<reset\>"     end="\>"
-syntax region adiceCmdAlertSubSuppress contained matchgroup=adiceCmdSub start="\<suppress\>"  end="\>"
-
-syntax region adiceCmdAlertSubOnOffSub   contained matchgroup=adiceCmdSub start="\<\(mod\|com\)\>"           end="\>"
+syntax region adiceCmdAlertSubOnOffSub   contained matchgroup=adiceCmdSub start="\<\(mod\|com\)\>" end="$" contains=@adiceNonCmdGroup
 
 "** Alter Command **
 syntax region adiceCmdAlter contained transparent matchgroup=adiceCommand start="\<alt\%[er]\>" end="$" contains=@adiceCmdFollowGroup,@adiceNonCmdGroup,adiceCmdSubIn
@@ -105,15 +102,39 @@ syntax region adiceCmdClose transparent matchgroup=adiceCommand start="\<clo\%[s
 syntax cluster adiceCmdGroup add=adiceCmdClose
 
 "** Command Command **
-syntax keyword adiceCommand contained com[mand] nextgroup=adiceSpecialFile
+syntax region adiceCmdCommand transparent matchgroup=adiceCommand start="\<com\%[mand]\>" end="$" end="\(\#\|)\|/\*\|&\s*$\|\s\)\@!"  contains=@adiceCmdFollowGroup
+syntax cluster adiceCmdGroup add=adiceCmdCommand
 
 "** Continue Command **
-syntax region adiceCmdContinue contained transparent matchgroup=adiceCommand start="\<con\%[tinue]\>" end="$" contains=@adiceCmdFollowGroup,@adiceNonCmdGroup,adiceCmdSubIn
-syntax cluster adiceCmdGroup add=adiceCmdClose
+syntax region adiceCmdContinue contained transparent matchgroup=adiceCommand start="\<con\%[tinue]\>" end="$" end="\(\#\|)\|/\*\|&\s*$\|\s\)\@!" contains=@adiceCmdFollowGroup nextgroup=adiceCmdContinueSub
+syntax cluster adiceCmdGroup add=adiceCmdContinue
+
+syntax region adiceCmdContinueSub   contained matchgroup=adiceCmdSub start="\<to\>"  end="$" contains=@adiceNonCmdGroup,adiceCmdSubIncr
+syntax region adiceCmdContinueSub   contained matchgroup=adiceCmdSub start="\<at\>"  end="$" contains=@adiceNonCmdGroup
+
+"** Define Command **
+syntax region adiceCmdDefine contained transparent matchgroup=adiceCommand start="\<def\%[ine]\>" end="$" contains=@adiceCmdFollowGroup,@adiceNonCmdGroup,adiceCmdSubIn
+syntax cluster adiceCmdGroup add=adiceCmdDefine
+
+"** Delete Command **
+syntax region adiceCmdDelete contained transparent matchgroup=adiceCommand start="\<del\%[ete]\>" end="$" end="\(\#\|)\|/\*\|&\s*$\|\s\)\@!" contains=@adiceCmdFollowGroup nextgroup=adiceCmdDeleteSub
+syntax cluster adiceCmdGroup add=adiceCmdDelete
+
+syntax region adiceCmdDeleteSub      contained matchgroup=adiceCmdSub start="\<scan\>"   end="$" contains=@adiceNonCmdGroup,adiceCmdDeleteSubLast
+syntax region adiceCmdDeleteSub      contained matchgroup=adiceCmdSub start="\<scans\>"  end="$" contains=@adiceNonCmdGroup
+syntax region adiceCmdDeleteSubLast  contained matchgroup=adiceCmdSub start="\<last\>"   end="\>" contains=@adiceNonCmdGroup
+
+"** Demand Command **
+syntax region adiceCmdDemand contained transparent matchgroup=adiceCommand start="\<dem\%[and]\>" end="$" contains=@adiceCmdFollowGroup,@adiceNonCmdGroup
+syntax cluster adiceCmdGroup add=adiceCmdDemand
+
+"** Dimension Command **
+syntax region adiceCmdDimension contained transparent matchgroup=adiceCommand start="\<dim\%[ension]\>" end="$" contains=@adiceCmdFollowGroup,@adiceNonCmdGroup,adiceCmdSubIn
+syntax cluster adiceCmdGroup add=adiceCmdDimension
 
 "** Display Command **
 syntax region adiceCmdDisplay contained transparent matchgroup=adiceCommand start="\<dis\%[play]\>" end="$" end="\(\#\|)\|/\*\|&\s*$\|\s\)\@!" contains=@adiceCmdFollowGroup nextgroup=adiceCmdDisplaySubLong,@adiceCmdDisplayGroup
-"
+syntax cluster adiceCmdGroup add=adiceCmdDisplay
 
 syntax cluster adiceCmdDisplayGroup contains=adiceCmdDisplaySubAc,adiceCmdDisplaySubAlias,adiceCmdDisplaySubAspects,adiceCmdDisplaySubDc,adiceCmdDisplaySubElements,adiceCmdDisplaySubEpath,adiceCmdDisplaySubExecutes,adiceCmdDisplaySubFlatNodes,adiceCmdDisplaySubFop,adiceCmdDisplaySubFrequency,adiceCmdDisplaySubInclude,adiceCmdDisplaySubIsolating,adiceCmdDisplaySubKeeps,adiceCmdDisplaySubLabel,adiceCmdDisplaySubLibrary,adiceCmdDisplaySubModels,adiceCmdDisplaySubMonitored,adiceCmdDisplaySubMor,adiceCmdDisplaySubNemo,adiceCmdDisplaySubNics,adiceCmdDisplaySubNodes,adiceCmdDisplaySubNoise,adiceCmdDisplaySubNonics,adiceCmdDisplaySubNpars,adiceCmdDisplaySubNsts,adiceCmdDisplaySubOpen,adiceCmdDisplaySubParameterize,adiceCmdDisplaySubParts,adiceCmdDisplaySubPcaps,adiceCmdDisplaySubPss,adiceCmdDisplaySubPz,adiceCmdDisplaySubSaveas,adiceCmdDisplaySubSensitivity,adiceCmdDisplaySubSimulate,adiceCmdDisplaySubStats,adiceCmdDisplaySubSubckt,adiceCmdDisplaySubSubsys_of,adiceCmdDisplaySubSweep,adiceCmdDisplaySubTran
 
@@ -198,7 +219,7 @@ if version >= 508 || !exists("did_adice_syn_inits")
 
    HiLink adiceCommand        Keyword
    HiLink adiceCmdSub         Type
-   HiLink adiceSpecialLine    Special
+   HiLink adiceContinueLine    Special
    HiLink adiceSpecialFile    Special
 
    delcommand HiLink
